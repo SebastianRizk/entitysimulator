@@ -1,7 +1,7 @@
 .gameBoard {
 
-    width: 1000px;
-    height: 800px;
+    width: 750px;
+    height: 850px;
     display: flex;
     flex-direction: column;
     background-color: lightgray;
