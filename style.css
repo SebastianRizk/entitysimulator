@@ -1,0 +1,24 @@
+.gameBoard {
+
+    width: 1000px;
+    height: 800px;
+    display: flex;
+    flex-direction: column;
+    background-color: lightgray;
+}
+
+.navBar {
+    height: 100px;
+    background-color: red;
+    display: flex;
+    justify-content: space-evenly;
+}
+.card{
+
+}
+
+.simulator {
+    flex: 1;
+    background-color: beige;
+
+}
