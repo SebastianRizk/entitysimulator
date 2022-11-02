@@ -1,1 +1,1 @@
-latest version at axelbergman.se
+A version can be found at axelbergman.se

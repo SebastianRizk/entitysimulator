@@ -1,3 +1,4 @@
+
 function generateFood(x, y, f){
     let foodMap = []
     let ones = 0
@@ -12,8 +13,6 @@ function generateFood(x, y, f){
     console.log(ones)
     return foodMap
 }
-
-generateFood(20,14,0.5)
 
 
 class Human {
@@ -40,8 +39,6 @@ class Human {
             }
         }
 
-        console.log(new search(nextX, nextY, [],999).lookAround())
-
     }
 
     oldPos() {
@@ -57,49 +54,6 @@ class Human {
         game.world.nodes[this.newPos()].style.backgroundColor = "red"
     }
 }
-
-
-let N = 20
-let M = 14
-
-class QItem {
-    constructor(x, y, w) {
-        this.row = x;
-        this.col = t;
-        this.distance = w;
-    }
-}
-
-function minDistance(grid) {
-    let source = new QItem(0,0,0)
-    let visited = Array.from(Array(N), ()=>Array(M).fill(0))
-    for (let i = 0; i < N; i++) {
-        for (let j = 0; j < M; j++) {
-            if(grid[i][j] === '0')
-                visited[i][j] = true;
-            else
-                visited[i][j] = false;
-            if(grid[i][j] == 's'){
-                source.row = i;
-                source.col = j;
-            }
-        }
-    }
-
-    let q = [];
-    q.push(source);
-    visited[source.row][source.col] = true;
-    while(q.length!==0) {
-        let p = q[0];
-        q.shift();
-
-        if(grid[p.row][p.col] == 'd')
-            return
-    }
-}
-
-
-class startingVector {}
 
 class Game {
     constructor(human, world) {
