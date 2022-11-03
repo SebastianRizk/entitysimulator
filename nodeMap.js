@@ -20,6 +20,30 @@ class simView {
     }
 }
 
+export default class MapController {
+    constructor(VISUAL_RANGE) {
+        this.nodemap = new NodeMap();
+        this.VISUAL_RANGE = VISUAL_RANGE;
+    }
+
+    move(x, y) {
+
+        player.move(x, y);
+        this.nodemap.runUpdate();
+    }
+
+    update() {
+        this.nodemap.runUpdate();
+    }
+
+    // Get view of map
+    getView() {
+        let retval = this.nodemap.getVision(this.VISUAL_RANGE);
+        return retval;
+    }
+    //
+}
+
 // Data structure for an array of all stored nodes
 class NodeMap {
     constructor() {
@@ -35,7 +59,6 @@ class NodeMap {
     }
 
     generateNodeMap() {
-        console.log("Player x: " + player.getX() + " Player y: " + player.getY());
         let xCount = player.getX();
         let yCount = player.getY();
         let newMap = [];
@@ -94,6 +117,28 @@ class NodeMap {
         }
         return false;
     }
+
+    getVision(VISUAL_RANGE) {
+        let playerX = player.getX() + 7;
+        let lBound = playerX - VISUAL_RANGE;
+        let rBound = playerX + VISUAL_RANGE;
+        let playerY = player.getY() + 7;
+        let uBound = playerY - VISUAL_RANGE;
+        let dBound = playerY + VISUAL_RANGE;
+        let retval = [];
+
+
+        for (let i = 0; i < this.index.length; i++) {
+            if(this.index[i].x >= lBound && this.index[i].x <= rBound && this.index[i].y >= uBound && this.index[i].y <= dBound){
+                retval.push(this.index[i]);
+
+            }
+        }
+        if(retval.length !== 9){
+            console.log("Error: Vision array is not 25");
+        }
+        return retval;
+    }
 }
 
 // Data structure for a single node
@@ -102,7 +147,7 @@ class NodeIndex {
         this.x = x;
         this.y = y;
         this.active = false;
-        this.node = new Node(x + ", " + y);
+        this.node = new Node();
     }
     updateActive() {
 
@@ -135,13 +180,12 @@ class NodeIndex {
 
 // Data structure with node and creation data
 class Node {
-    constructor(xandy) {
+    constructor() {
         this.element = document.createElement("div");
         this.element.style.width = "50px";
         this.element.style.height = "50px";
         this.element.style.boxShadow = "inset 0 0 0 2px black";
         this.element.style.float = "left";
-        this.element.innerHTML = xandy;
         if (Math.random() < 0.1){ // 10% chance of node being green
             this.element.style.backgroundColor = "green";
         } else {
@@ -155,6 +199,3 @@ class Node {
         return this.element.style.backgroundColor;
     }
 }
-
-let simulator = new simView();
-simulator.test();
