@@ -8,11 +8,9 @@ class simView {
     }
 
     test() {
-        this.movePlayer(0,0); // Otherwise it will start on blank screen
         setInterval(() => {this.movePlayer(0, 1)}, 250); // Move player every 250ms
-
-
     }
+
     movePlayer(xx, yy) {
 
         player.move(xx, yy); // Move player xx units in x and yy units in y
@@ -25,8 +23,8 @@ class simView {
 class NodeMap {
     constructor() {
         this.index = [];
-        this.index = this.generateNodeMap();
         this.map = document.getElementById("sim");
+        this.runUpdate();
     }
 
     runUpdate() {
@@ -73,20 +71,30 @@ class NodeMap {
             this.index.push(buffer[i]);
         }
 
+
+        console.log(this.index.length);
+
         return this.index;
     }
 
     // Adds enabled nodes to the html file and remove disabled nodes
     paintEnabledNodes() {
+        let count = 0
         for (let i = 0; i < this.index.length; i++) {
             this.index[i].updateActive();
             if(this.index[i].active){
+                count++
                 this.map.appendChild(this.index[i].node.element);
+
             } else if ( this.index[i].node.element.parentNode === this.map) {
                 this.map.removeChild(this.index[i].node.element);
             }
         }
+        console.log(this.index.length - count);
+
     }
+
+
 
     // Checks if item exists in index
     itemExists(xCount, yCount) {
