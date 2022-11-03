@@ -8,13 +8,14 @@ class simView {
     }
 
     test() {
-        setInterval(() => {this.movePlayer(0, 1)}, 250); // Move player every 250ms
+        setInterval(() => {this.movePlayer(0, 0)}, 250); // Move player every 250ms
+
     }
+
 
     movePlayer(xx, yy) {
 
-        player.move(xx, yy); // Move player xx units in x and yy units in y
-        // TODO: ONLY WORKS DOWN AND JUMPS AT START
+        player.move(xx, yy);
         this.nodemap.runUpdate(); // Update the map
     }
 }
@@ -28,69 +29,57 @@ class NodeMap {
     }
 
     runUpdate() {
-        this.index = this.generateNodeMap();
+        let newIndex = this.generateNodeMap();
+        this.mergeNodeMap(newIndex);
         this.paintEnabledNodes();
     }
 
-    generateNodeMap(){
+    generateNodeMap() {
+        console.log("Player x: " + player.getX() + " Player y: " + player.getY());
+        let xCount = player.getX();
+        let yCount = player.getY();
+        let newMap = [];
 
-        // TODO: Can only move down FIX
-        let test = 0;
-        let buffer = [];
-        let xCount = player.getX(); // Get "player" x position actually top right corner of map that you can see
-        let yCount = player.getY(); // Get "player" y position
-        for(let i = player.getX(); i < player.getX() + 15; i++){
-
-
-
-            for (let j = player.getY(); j < player.getY() + 15; j++) {
-
-                // if node already exists in index then skip it
-                // if it exists then it will be inserted into the buffer which will add the node at the end of the index
-                if(this.index[test] !== undefined){
-                    if(!this.itemExists(xCount, yCount)){
-                        buffer.push(new NodeIndex(xCount,yCount));
-                    }
-                    test++;
-                    yCount++;
-                    continue;
-                }
-
-                // Add node to index
+        for (let i = player.getY(); i < player.getY() + 15; i++) {
+            for (let j = player.getX(); j < player.getX() + 15; j++) {
                 let node = new NodeIndex(xCount, yCount);
-                this.index[test++] = node;
-                yCount++;
+                newMap.push(node);
+                xCount++;
             }
-            // Reset yCount
-            yCount = player.getY();
-            xCount++;
+            xCount = player.getX();
+            yCount++;
         }
+        return newMap;
+    }
 
-        for (let i = 0; i < buffer.length; i++) {
-
-            this.index.push(buffer[i]);
+    mergeNodeMap(newMap) {
+        for (let i = 0; i < newMap.length; i++) {
+            if(!this.itemExists(newMap[i].x, newMap[i].y)){
+                this.index.push(newMap[i]);
+            }
         }
-
-
-        console.log(this.index.length);
-
-        return this.index;
     }
 
     // Adds enabled nodes to the html file and remove disabled nodes
     paintEnabledNodes() {
-        let count = 0
+
+        let startX = player.getX();
+        let startY = player.getY();
+        let nextMap = [];
+        this.index.sort((a,b) => {
+            if ( a.y === b.y) return a.x - b.x;
+            return a.y - b.y;
+        })
         for (let i = 0; i < this.index.length; i++) {
             this.index[i].updateActive();
-            if(this.index[i].active){
-                count++
+            if(!this.index[i].active && this.map.contains(this.index[i].node.element)){
+                    this.map.removeChild(this.index[i].node.element);
+            } else if (this.index[i].active){
                 this.map.appendChild(this.index[i].node.element);
-
-            } else if ( this.index[i].node.element.parentNode === this.map) {
-                this.map.removeChild(this.index[i].node.element);
             }
         }
-        console.log(this.index.length - count);
+
+
 
     }
 
@@ -113,7 +102,7 @@ class NodeIndex {
         this.x = x;
         this.y = y;
         this.active = false;
-        this.node = new Node();
+        this.node = new Node(x + ", " + y);
     }
     updateActive() {
 
@@ -127,26 +116,32 @@ class NodeIndex {
         } else if (Math.random() < 0.01 && this.node.getPaint() === "green"){ // Decay rate
             this.node.paint("white");
         }
+        let lowerBoundX = player.getX()
+        let lowerBoundY = player.getY()
+        let upperBoundX = player.getX() + 14;
+        let upperBoundY = player.getY() + 14;
 
 
-        this.active = this.x >= player.getX() && this.x <= player.getX() + 14 && this.y >= player.getY() && this.y <= player.getY() + 14;
-        return;
+        this.active = lowerBoundX <= this.x && this.x <= upperBoundX && lowerBoundY <= this.y && this.y <= upperBoundY;
+
+
     }
 
     // Returns true if node is player, ie in the center of the screen
     nodeIsPlayer() {
-        return this.x === 7 + player.getX() && this.y === 7 + player.getY();
+        return this.x === (7 + player.getX()) && this.y === (7 + player.getY());
     }
 }
 
 // Data structure with node and creation data
 class Node {
-    constructor() {
+    constructor(xandy) {
         this.element = document.createElement("div");
         this.element.style.width = "50px";
         this.element.style.height = "50px";
         this.element.style.boxShadow = "inset 0 0 0 2px black";
         this.element.style.float = "left";
+        this.element.innerHTML = xandy;
         if (Math.random() < 0.1){ // 10% chance of node being green
             this.element.style.backgroundColor = "green";
         } else {
