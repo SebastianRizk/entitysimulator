@@ -1,5 +1,8 @@
 import Human from "./human.js";
 let player = new Human(0, 0);
+let FOOD_GROWTH_RATE = 0;
+let FOOD_DECAY_RATE = 0;
+let VISUAL_RANGE = 0;
 
 // For testing purposes
 class simView {
@@ -21,9 +24,12 @@ class simView {
 }
 
 export default class MapController {
-    constructor(VISUAL_RANGE) {
+    constructor(visualRange, foodGrowthRate, foodDecayRate) {
         this.nodemap = new NodeMap();
-        this.VISUAL_RANGE = VISUAL_RANGE;
+        FOOD_GROWTH_RATE = foodGrowthRate;
+        FOOD_DECAY_RATE = foodDecayRate;
+        VISUAL_RANGE = visualRange;
+
     }
 
     move(x, y) {
@@ -38,7 +44,7 @@ export default class MapController {
 
     // Get view of map
     getView() {
-        let retval = this.nodemap.getVision(this.VISUAL_RANGE);
+        let retval = this.nodemap.getVision();
         return retval;
     }
     //
@@ -94,7 +100,7 @@ class NodeMap {
             return a.y - b.y;
         })
         for (let i = 0; i < this.index.length; i++) {
-            this.index[i].updateActive();
+            this.index[i].updateActive()
             if(!this.index[i].active && this.map.contains(this.index[i].node.element)){
                     this.map.removeChild(this.index[i].node.element);
             } else if (this.index[i].active){
@@ -118,7 +124,7 @@ class NodeMap {
         return false;
     }
 
-    getVision(VISUAL_RANGE) {
+    getVision() {
         let playerX = player.getX() + 7;
         let lBound = playerX - VISUAL_RANGE;
         let rBound = playerX + VISUAL_RANGE;
@@ -156,9 +162,9 @@ class NodeIndex {
             this.node.paint("red")
         }else if (this.node.getPaint() === "red"){// If it was red, paint it white
             this.node.paint("white");
-        }else if (Math.random() < 0.0005){ // Growt rate
+        }else if (Math.random() < FOOD_GROWTH_RATE){ // Growth rate
             this.node.paint("green");
-        } else if (Math.random() < 0.01 && this.node.getPaint() === "green"){ // Decay rate
+        } else if (Math.random() < FOOD_DECAY_RATE && this.node.getPaint() === "green"){ // Decay rate
             this.node.paint("white");
         }
         let lowerBoundX = player.getX()

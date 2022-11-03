@@ -4,7 +4,7 @@ import MapController from "./nodeMap.js";
 
 class Game {
     constructor() {
-        this.mapController = new MapController();
+        this.mapController = new MapController(2, 0.0005, 0.01);
         this.scoreBoard = document.getElementById("score")
         this.restartButton = document.getElementById("restartButton")
         this.restartButton.onclick = () => {location.reload()}
@@ -13,7 +13,7 @@ class Game {
     draw() {
         this.mapController.update();
 
-        this.scoreBoard.innerHTML = "Score is " + 0
+        this.scoreBoard.innerHTML = "Score is " + 0;
     }
 
     move(x, y) {
@@ -85,4 +85,5 @@ function update() {
 function loop(timestamp) {
     // Update every 100ms
     setInterval(() => {update()}, 10);
+    setInterval(() => {game.move(Math.round(Math.random()*2 - 1), Math.round(Math.random()*2 -1))}, 100);
 }
