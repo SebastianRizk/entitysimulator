@@ -1,4 +1,4 @@
-import MapController from "./nodeMap.js";
+import {MapController} from "./nodeMap.js";
 
 
 
@@ -8,16 +8,22 @@ class Game {
         this.scoreBoard = document.getElementById("score")
         this.restartButton = document.getElementById("restartButton")
         this.restartButton.onclick = () => {location.reload()}
+        this.score = 0;
     }
 
     draw() {
         this.mapController.update();
 
-        this.scoreBoard.innerHTML = "Score is " + 0;
+        this.scoreBoard.innerHTML = "Score is " + this.score;
     }
 
     move(x, y) {
-        this.mapController.move(x,y);
+        let collected = this.mapController.move(x,y);
+        if(collected === "green") {
+            this.score += 1;
+        }
+        this.draw();
+
     }
 }
 
@@ -84,6 +90,7 @@ function update() {
 
 function loop(timestamp) {
     // Update every 100ms
+    game.draw();
     setInterval(() => {update()}, 10);
     setInterval(() => {game.move(Math.round(Math.random()*2 - 1), Math.round(Math.random()*2 -1))}, 100);
 }

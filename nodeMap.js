@@ -1,4 +1,5 @@
 import Human from "./human.js";
+
 let player = new Human(0, 0);
 let FOOD_GROWTH_RATE = 0;
 let FOOD_DECAY_RATE = 0;
@@ -22,8 +23,7 @@ class simView {
         this.nodemap.runUpdate(); // Update the map
     }
 }
-
-export default class MapController {
+export class MapController {
     constructor(visualRange, foodGrowthRate, foodDecayRate) {
         this.nodemap = new NodeMap();
         FOOD_GROWTH_RATE = foodGrowthRate;
@@ -35,7 +35,7 @@ export default class MapController {
     move(x, y) {
 
         player.move(x, y);
-        this.nodemap.runUpdate();
+        return this.nodemap.runUpdate();
     }
 
     update() {
@@ -61,7 +61,7 @@ class NodeMap {
     runUpdate() {
         let newIndex = this.generateNodeMap();
         this.mergeNodeMap(newIndex);
-        this.paintEnabledNodes();
+        return this.paintEnabledNodes();
     }
 
     generateNodeMap() {
@@ -92,6 +92,9 @@ class NodeMap {
     // Adds enabled nodes to the html file and remove disabled nodes
     paintEnabledNodes() {
 
+        let testVal;
+        let retVal = "pink";
+
         let startX = player.getX();
         let startY = player.getY();
         let nextMap = [];
@@ -100,16 +103,20 @@ class NodeMap {
             return a.y - b.y;
         })
         for (let i = 0; i < this.index.length; i++) {
-            this.index[i].updateActive()
+            testVal = this.index[i].updateActive()
+            if(testVal !== "pink"){
+                retVal = testVal;
+            }
             if(!this.index[i].active && this.map.contains(this.index[i].node.element)){
                     this.map.removeChild(this.index[i].node.element);
             } else if (this.index[i].active){
                 this.map.appendChild(this.index[i].node.element);
             }
         }
-
-
-
+        if(retVal === "pink"){
+            return "pink";
+        }
+        return retVal;
     }
 
 
@@ -156,9 +163,12 @@ class NodeIndex {
         this.node = new Node();
     }
     updateActive() {
-
+        let retval = "pink";
         // Check if node is player
         if(this.nodeIsPlayer()){ // If node is player, paint it red
+            if(this.node.getPaint() === "green"){
+                retval = "green";
+            }
             this.node.paint("red")
         }else if (this.node.getPaint() === "red"){// If it was red, paint it white
             this.node.paint("white");
@@ -174,7 +184,7 @@ class NodeIndex {
 
 
         this.active = lowerBoundX <= this.x && this.x <= upperBoundX && lowerBoundY <= this.y && this.y <= upperBoundY;
-
+        return retval;
 
     }
 
