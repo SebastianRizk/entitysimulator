@@ -4,6 +4,7 @@ let player = new Human(0, 0);
 let FOOD_GROWTH_RATE = 0;
 let FOOD_DECAY_RATE = 0;
 let VISUAL_RANGE = 0;
+let DIFFICULTY = 0.05;
 
 // For testing purposes
 class simView {
@@ -24,11 +25,12 @@ class simView {
 }
 
 export class MapController {
-  constructor(visualRange, foodGrowthRate, foodDecayRate) {
+  constructor(visualRange, foodGrowthRate, foodDecayRate, difficulty) {
     this.nodemap = new NodeMap();
     FOOD_GROWTH_RATE = foodGrowthRate;
     FOOD_DECAY_RATE = foodDecayRate;
     VISUAL_RANGE = visualRange;
+    DIFFICULTY = difficulty;
   }
 
   move(x, y) {
@@ -161,7 +163,7 @@ class NodeIndex {
     this.x = x;
     this.y = y;
     this.active = false;
-    this.node = new Node();
+    this.node = new Node(x, y);
   }
 
   updateActive() {
@@ -172,10 +174,13 @@ class NodeIndex {
       if (this.node.getPaint() === "green") {
         retval = "green";
       }
+      else if(this.node.getPaint() === "yellow") {
+        retval = "yellow";
+      }
       this.node.paint("red");
     } else if (this.node.getPaint() === "red") {
       // If it was red, paint it white
-      this.node.paint("white");
+      this.node.basePaint();
     } else if (Math.random() < FOOD_GROWTH_RATE) {
       // Growth rate
       this.node.paint("green");
@@ -207,17 +212,36 @@ class NodeIndex {
 
 // Data structure with node and creation data
 class Node {
-  constructor() {
+  constructor(x, y) {
     this.element = document.createElement("div");
     this.element.style.width = "50px";
     this.element.style.height = "50px";
     this.element.style.boxShadow = "inset 0 0 0 2px black";
     this.element.style.float = "left";
-    if (Math.random() < 0.1) {
-      // 10% chance of node being green
-      this.element.style.backgroundColor = "green";
+
+    if (Math.random() < DIFFICULTY) {
+      let terrainDifficulty = Math.round((Math.random()*255)).toString(16);
+      this.element.style.backgroundColor = "#" + terrainDifficulty + terrainDifficulty + terrainDifficulty;
     } else {
       this.element.style.backgroundColor = "white";
+    }
+    if(this.element.style.backgroundColor === "red") {
+      this.player = true;
+    }
+    else {
+      false;
+    }
+    this.x = x;
+    this.y = y;
+
+    this.baseColor = this.element.style.backgroundColor;
+
+    if (Math.random() < 0.1) {
+      // 10% chance of node being green
+      this.element.style.backgroundColor = "#" + "00" + "80" + "00"; // TODO scale score and change color. Color currently set to be the equivalent of "green"
+      if (Math.random() < 0.1) {
+        this.element.style.backgroundColor = "yellow";
+      }
     }
   }
 
@@ -227,5 +251,25 @@ class Node {
 
   getPaint() {
     return this.element.style.backgroundColor;
+  }
+
+  basePaint() {
+    this.element.style.backgroundColor = this.baseColor;
+  }
+
+  getx() {
+    return this.x;
+  }
+
+  setx(value) {
+    this.x = value;
+  }
+
+  gety() {
+    return this.y;
+  }
+
+  sety(value) {
+    this.y = value;
   }
 }
