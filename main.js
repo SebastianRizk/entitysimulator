@@ -24,9 +24,27 @@ class Game {
     }
     this.draw();
   }
+  getView() {
+    return this.mapController.getView();
+  }
+}
+
+// Computer controlled player, uses game class to move and get vision
+class Controller {
+  makeMove() {
+    let vision = game.getView();
+    // Do stuff and choose a move
+    this.randomMove();
+  }
+  randomMove() {
+    let x = Math.floor(Math.random() * 3) - 1;
+    let y = Math.floor(Math.random() * 3) - 1;
+    game.move(x, y);
+  }
 }
 
 let game = new Game();
+let controller = new Controller();
 loop();
 
 let state = {
@@ -85,9 +103,6 @@ function loop(timestamp) {
     update();
   }, 10);
   setInterval(() => {
-    game.move(
-      Math.round(Math.random() * 2 - 1),
-      Math.round(Math.random() * 2 - 1)
-    );
-  }, 100);
+    controller.makeMove();
+  }, 1000);
 }
