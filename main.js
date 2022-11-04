@@ -33,6 +33,7 @@ class Game {
 class Controller {
   makeMove() {
     let vision = game.getView();
+    console.log(vision);
     // Do stuff and choose a move
     this.randomMove();
   }

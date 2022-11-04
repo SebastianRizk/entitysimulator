@@ -42,8 +42,7 @@ export class MapController {
 
   // Get view of map
   getView() {
-    let retval = this.nodemap.getVision();
-    return retval;
+    return this.nodemap.getVision();
   }
 
   //
@@ -149,7 +148,7 @@ class NodeMap {
         retval.push(this.index[i]);
       }
     }
-    if (retval.length !== 9) {
+    if (retval.length !== 25) {
       console.log("Error: Vision array is not 25");
     }
     return retval;
