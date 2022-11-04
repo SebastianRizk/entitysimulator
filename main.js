@@ -2,7 +2,7 @@ import { MapController } from "./nodeMap.js";
 
 class Game {
   constructor() {
-    this.mapController = new MapController(2, 0.0005, 0.01);
+    this.mapController = new MapController(2, 0.0005, 0.01, 0.05);
     this.scoreBoard = document.getElementById("score");
     this.restartButton = document.getElementById("restartButton");
     this.restartButton.onclick = () => {
@@ -22,6 +22,9 @@ class Game {
     if (collected === "green") {
       this.score += 1;
     }
+    if(collected === "yellow") {
+      this.score += 2;
+    }
     this.draw();
   }
   getView() {
@@ -35,7 +38,7 @@ class Controller {
     let vision = game.getView();
     console.log(vision);
     // Do stuff and choose a move
-    this.randomMove();
+    //this.randomMove();
   }
   randomMove() {
     let x = Math.floor(Math.random() * 3) - 1;
