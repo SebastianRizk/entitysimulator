@@ -13,9 +13,6 @@
     display: flex;
     justify-content: space-evenly;
 }
-.card{
-
-}
 
 .simulator {
     flex: 1;
