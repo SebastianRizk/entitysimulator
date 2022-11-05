@@ -19,10 +19,11 @@ class Game {
 
   move(x, y) {
     let collected = this.mapController.move(x, y);
-    if (collected === "green") {
+    console.log(collected);
+    if (collected[0] === "green") {
       this.score += 1;
     }
-    if (collected === "yellow") {
+    if (collected[0] === "yellow") {
       this.score += 2;
     }
     this.draw();

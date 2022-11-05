@@ -167,17 +167,17 @@ class NodeIndex {
     // Check if node is player
     if (this.nodeIsPlayer()) {
       if (this.node.compareHexColor("green")) {
-        retval = "green";
-        console.log("Green");
+        retval = ["green", this.node.getPaint()];
+        console.log("Green", this.node.getPaint());
       } else if (this.node.compareHexColor("yellow")) {
-        retval = "yellow";
-        console.log("Yellow");
+        retval = ["yellow", this.node.getPaint()];
+        console.log("Yellow", this.node.getPaint());
       } else if (
         this.node.getPaint() !== "white" &&
         this.node.getPaint() !== "red"
       ) {
-        retval = this.node.hexColor();
-        console.log("HEX");
+        retval = ["terrain", this.node.getPaint()];
+        console.log("HEX", this.node.getPaint());
       }
       this.node.paint("red");
     } else if (this.node.getPaint() === "red") {
@@ -241,7 +241,7 @@ class Node {
           this.element.style.backgroundColor = "#" + "DD" + "DD" + "00";
         }
       } else {
-        let shade = (221 - parseInt(this.hexColor()[1], 16)).toString(16);
+        let shade = parseInt(this.hexColor()[1], 16).toString(16);
         this.paint("#" + "00" + shade + "00");
 
         if (Math.random() < 0.1) {
