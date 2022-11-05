@@ -1,3 +1,14 @@
+.page {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: dodgerblue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .gameBoard {
 
     width: 750px;
@@ -5,11 +16,12 @@
     display: flex;
     flex-direction: column;
     background-color: lightgray;
+    border: black solid 5px;
 }
 
 .navBar {
     height: 100px;
-    background-color: red;
+    background-color: lightskyblue;
     display: flex;
     justify-content: space-evenly;
 }
@@ -18,4 +30,94 @@
     flex: 1;
     background-color: beige;
 
+}
+
+.card {
+    font-size: 16px;
+    color: black;
+    font-family: "Droid Sans", sans-serif;
+}
+
+.content {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+
+}
+
+.header {
+    flex: 1;
+    width: 100%;
+    background-color: beige;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.right {
+    flex: 1;
+    height: 100%;
+    background-color: beige;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.left {
+    flex: 1;
+    height: 100%;
+    background-color: beige;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.tail {
+    flex: 1;
+    width: 100%;
+    background-color: beige;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+h2 {
+    font-size: 28px;
+    color: black;
+    font-family: "Droid Sans", sans-serif;
+    margin: 40px;
+}
+
+
+p1 {
+    font-size: 20px;
+    color: black;
+    font-family: "Droid Sans", sans-serif;
+    margin: 30px;
+    text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    overflow: hidden;
+    font-size: 20px;
+    color: black;
+    font-family: "Droid Sans", sans-serif;
+    margin-bottom: 120px;
+    text-align: center;
+
+
+}
+
+a {
+    font-family: "Droid Sans", sans-serif;
+    font-size: 28px;
+    text-decoration: none;
+    color: black;
 }
