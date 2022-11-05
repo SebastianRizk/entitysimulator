@@ -92,18 +92,15 @@ class NodeMap {
   // Adds enabled nodes to the html file and remove disabled nodes
   paintEnabledNodes() {
     let testVal;
-    let retVal = "pink";
+    let retVal = "none";
 
-    let startX = player.getX();
-    let startY = player.getY();
-    let nextMap = [];
     this.index.sort((a, b) => {
       if (a.y === b.y) return a.x - b.x;
       return a.y - b.y;
     });
     for (let i = 0; i < this.index.length; i++) {
       testVal = this.index[i].updateActive();
-      if (testVal !== "pink") {
+      if (testVal !== "none") {
         retVal = testVal;
       }
       if (
@@ -115,9 +112,7 @@ class NodeMap {
         this.map.appendChild(this.index[i].node.element);
       }
     }
-    if (retVal === "pink") {
-      return "pink";
-    }
+
     return retVal;
   }
 
@@ -171,12 +166,18 @@ class NodeIndex {
 
     // Check if node is player
     if (this.nodeIsPlayer()) {
-      if (this.node.compareHexColor([0, 221, 0], [0, 40, 0])) {
+      if (this.node.compareHexColor("green")) {
         retval = "green";
-      } else if (this.node.getPaint() === "yellow") {
+        console.log("Green");
+      } else if (this.node.compareHexColor("yellow")) {
         retval = "yellow";
-      } else {
+        console.log("Yellow");
+      } else if (
+        this.node.getPaint() !== "white" &&
+        this.node.getPaint() !== "red"
+      ) {
         retval = this.node.hexColor();
+        console.log("HEX");
       }
       this.node.paint("red");
     } else if (this.node.getPaint() === "red") {
@@ -237,7 +238,7 @@ class Node {
       if (this.baseColor === "white") {
         this.element.style.backgroundColor = "#" + "00" + "DD" + "00";
         if (Math.random() < 0.1) {
-          this.element.style.backgroundColor = "yellow";
+          this.element.style.backgroundColor = "#" + "DD" + "DD" + "00";
         }
       } else {
         let shade = (221 - parseInt(this.hexColor()[1], 16)).toString(16);
@@ -275,7 +276,14 @@ class Node {
     return parts;
   }
 
-  compareHexColor(colorUpperBound, colorLowerBound) {
+  compareHexColor(comp) {
+    let colorUpperBound = [0, 221, 0];
+    let colorLowerBound = [0, 40, 0];
+
+    if (comp === "yellow") {
+      colorUpperBound = [221, 221, 0];
+      colorLowerBound = [40, 40, 0];
+    }
     let color = this.hexColor();
     if (typeof color === "string") {
       return false;
@@ -284,8 +292,8 @@ class Node {
     for (let i = 0; i < 3; i++) {
       if (
         !(
-          colorLowerBound[i] <= parseInt(color[i]) &&
-          parseInt(color[i]) <= colorUpperBound[i]
+          colorLowerBound[i] <= parseInt(color[i], 16) &&
+          parseInt(color[i], 16) <= colorUpperBound[i]
         )
       ) {
         return false;
