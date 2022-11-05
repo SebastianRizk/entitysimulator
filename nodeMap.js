@@ -167,27 +167,25 @@ class NodeIndex {
   }
 
   updateActive() {
-    let retval = "pink";
+    let retval = "none";
+
     // Check if node is player
     if (this.nodeIsPlayer()) {
-      // If node is player, paint it red
-      if (this.node.getPaint() === "green") {
+      if (this.node.compareHexColor([0, 221, 0], [0, 40, 0])) {
         retval = "green";
-      }
-      else if(this.node.getPaint() === "yellow") {
+      } else if (this.node.getPaint() === "yellow") {
         retval = "yellow";
+      } else {
+        retval = this.node.hexColor();
       }
       this.node.paint("red");
     } else if (this.node.getPaint() === "red") {
       // If it was red, paint it white
       this.node.basePaint();
-    } else if (Math.random() < FOOD_GROWTH_RATE) {
+    } else if (Math.random() < 0) {
       // Growth rate
       this.node.paint("green");
-    } else if (
-      Math.random() < FOOD_DECAY_RATE &&
-      this.node.getPaint() === "green"
-    ) {
+    } else if (Math.random() < 0 && this.node.getPaint() === "green") {
       // Decay rate
       this.node.paint("white");
     }
@@ -219,17 +217,15 @@ class Node {
     this.element.style.boxShadow = "inset 0 0 0 2px black";
     this.element.style.float = "left";
 
+    // GENERATE BASE COLOR
     if (Math.random() < DIFFICULTY) {
-      let terrainDifficulty = Math.round((Math.random()*255)).toString(16);
-      this.element.style.backgroundColor = "#" + terrainDifficulty + terrainDifficulty + terrainDifficulty;
+      let terrainDifficulty = Math.round(Math.random() * 90 + 20).toString(16);
+      this.element.style.backgroundColor =
+        "#" + terrainDifficulty + terrainDifficulty + terrainDifficulty;
+      this.baseColor = this.element.style.backgroundColor;
     } else {
       this.element.style.backgroundColor = "white";
-    }
-    if(this.element.style.backgroundColor === "red") {
-      this.player = true;
-    }
-    else {
-      false;
+      this.baseColor = this.element.style.backgroundColor;
     }
     this.x = x;
     this.y = y;
@@ -238,9 +234,18 @@ class Node {
 
     if (Math.random() < 0.1) {
       // 10% chance of node being green
-      this.element.style.backgroundColor = "#" + "00" + "80" + "00"; // TODO scale score and change color. Color currently set to be the equivalent of "green"
-      if (Math.random() < 0.1) {
-        this.element.style.backgroundColor = "yellow";
+      if (this.baseColor === "white") {
+        this.element.style.backgroundColor = "#" + "00" + "DD" + "00";
+        if (Math.random() < 0.1) {
+          this.element.style.backgroundColor = "yellow";
+        }
+      } else {
+        let shade = (221 - parseInt(this.hexColor()[1], 16)).toString(16);
+        this.paint("#" + "00" + shade + "00");
+
+        if (Math.random() < 0.1) {
+          this.paint("#" + shade + shade + "00");
+        }
       }
     }
   }
@@ -251,6 +256,42 @@ class Node {
 
   getPaint() {
     return this.element.style.backgroundColor;
+  }
+
+  hexColor() {
+    let parts = this.getPaint().match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+    if (parts === null) {
+      return this.getPaint();
+    }
+    delete parts[0];
+    for (let i = 1; i <= 3; ++i) {
+      if (parts[i] === "0") {
+        continue;
+      }
+      parts[i] = parseInt(parts[i]).toString(16);
+      if (parts[i].length === 1) parts[i] = "0" + parts[i];
+    }
+    parts.shift();
+    return parts;
+  }
+
+  compareHexColor(colorUpperBound, colorLowerBound) {
+    let color = this.hexColor();
+    if (typeof color === "string") {
+      return false;
+    }
+
+    for (let i = 0; i < 3; i++) {
+      if (
+        !(
+          colorLowerBound[i] <= parseInt(color[i]) &&
+          parseInt(color[i]) <= colorUpperBound[i]
+        )
+      ) {
+        return false;
+      }
+    }
+    return true;
   }
 
   basePaint() {

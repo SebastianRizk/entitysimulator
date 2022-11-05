@@ -22,7 +22,7 @@ class Game {
     if (collected === "green") {
       this.score += 1;
     }
-    if(collected === "yellow") {
+    if (collected === "yellow") {
       this.score += 2;
     }
     this.draw();
@@ -36,7 +36,6 @@ class Game {
 class Controller {
   makeMove() {
     let vision = game.getView();
-    console.log(vision);
     // Do stuff and choose a move
     //this.randomMove();
   }
